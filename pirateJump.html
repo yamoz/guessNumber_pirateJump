@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://meyerweb.com/eric/tools/css/reset/reset.css">
+    <link rel="stylesheet" href="./frontend.css">
+    <script src="./guessNum_backend.js"></script>
+    <!-- <style>
+    </style> -->
+    <title>pirateJump</title>
+</head>
+
+<body>
+    <ul class="nav">
+        <li><button onclick="uncheckAll()">UncheckAll</button></li>
+        <li><button onclick="location.reload()">RestartGame</button></li>
+        <li><button onclick="document.getElementById(`ans`).style.visibility = 'visible'">showAnswer</button></li>
+        <li><select name="randAmount" id="randAmount" onchange="start()">
+                <option value="1">產生1個隨機數</option>
+                <option value="2">產生2個隨機數</option>
+                <option value="3">產生3個隨機數</option>
+                <option value="4">產生4個隨機數</option>
+                <option value="5" selected="selected">產生5個隨機數</option>
+            </select></li>
+    </ul>
+    <h1>海盜插劍遊戲</h1>
+    <p class="introduction">
+        遊戲說明: 遊戲會產生指定數量的[0-9]之間隨機且不重複的數(預設5個)。請使用鍵盤或滑鼠輸入數字，觸發機關(最後猜中)者須請飲料。
+    </p>
+    <div id="prize">
+        <p>請喝飲料!</p>
+    </div>
+    <ul class="guess" id="randAmount">
+        <li><label id="label_1" for="checkbox_1">1</label><input type="checkbox" name="guessNum" id="checkbox_1"
+                value="1"></li>
+        <li><label id="label_2" for="checkbox_2">2</label><input type="checkbox" name="guessNum" id="checkbox_2"
+                value="2"></li>
+        <li><label id="label_3" for="checkbox_3">3</label><input type="checkbox" name="guessNum" id="checkbox_3"
+                value="3"></li>
+        <li><label id="label_4" for="checkbox_4">4</label><input type="checkbox" name="guessNum" id="checkbox_4"
+                value="4"></li>
+        <li><label id="label_5" for="checkbox_5">5</label><input type="checkbox" name="guessNum" id="checkbox_5"
+                value="5"></li>
+        <li><label id="label_6" for="checkbox_6">6</label><input type="checkbox" name="guessNum" id="checkbox_6"
+                value="6"></li>
+        <li><label id="label_7" for="checkbox_7">7</label><input type="checkbox" name="guessNum" id="checkbox_7"
+                value="7"></li>
+        <li><label id="label_8" for="checkbox_8">8</label><input type="checkbox" name="guessNum" id="checkbox_8"
+                value="8"></li>
+        <li><label id="label_9" for="checkbox_9">9</label><input type="checkbox" name="guessNum" id="checkbox_9"
+                value="9"></li>
+        <li><label id="label_0" for="checkbox_0">0</label><input type="checkbox" name="guessNum" id="checkbox_0"
+                value="0"></li>
+    </ul>
+    <p id="ans"></p>
+
+    <script> // frontend scripts
+        // 黑男1-10選一個數字(二維陣列隨機排序)
+        // 隨機跳出大冒險
+        // get the instant checkbox value
+        let randomNumArr = [];
+        window.onload = function () {
+            start();
+            // get user input
+            // 幫每個checkbox新增eventListener(即時比對)
+            let checkboxes = document.querySelectorAll("input[name=guessNum]");
+            for (let i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].addEventListener('click', getValueAndCheck); // 滑鼠點擊觸發
+                window.addEventListener('keyup', getValueAndCheck); // 鍵盤輸入觸發
+            }
+
+        }
+
+        function uncheckAll() { // 一個一個按鈕取消選取
+            let checkboxes = document.querySelectorAll("input[name=guessNum]");
+            checkboxes.forEach(function (checkbox, index) {
+                document.getElementById(`label_${index}`).style.backgroundColor = "rgb(120, 90, 90)";
+                checkbox.checked = false;
+            });
+        }
+
+        function start() {
+            uncheckAll();
+            document.getElementById(`prize`).style.visibility = 'hidden';
+            document.getElementById(`ans`).style.visibility = 'hidden'
+
+            // get random numArray ( amount by id:randAmount element )
+            let randAmount = document.getElementById(`randAmount`);
+            randomNumArr = randomNumArray(randAmount.value);
+            // 填入答案於視窗(隱藏)
+            document.getElementById(`ans`).innerHTML = randomNumArr;
+
+        }
+
+        // trigger and eventListener
+        function getValueAndCheck(event) { // 希望可以拆分成getValue跟checkValue兩個function
+            // console.log(DOMObj.guessNum);
+            // check checkbox by keyboard
+            for (let i = 0; i < 10; i++) {
+                if (event.code == `Digit${i}`) {
+                    let checkbox = document.getElementById(`checkbox_${i}`);
+                    if (checkbox.checked == true) { // if checked, uncheck it.
+                        checkbox.checked = false;
+                    } else {
+                        checkbox.checked = true;
+                    }
+                    break;
+                }
+            }
+
+            let guessNumArr = []; // the array to store guessed num
+            // 看目前輸入了甚麼數字
+            let guessNumCheckboxes = document.querySelectorAll("input[name=guessNum]:checked");
+            let uncheckedboxes = document.querySelectorAll("input[name=guessNum]:not(:checked)");
+            // 選到了就改成lightblue，並將選到的值存入目前已猜數字陣列中
+            guessNumCheckboxes.forEach(function (checkbox, index) {
+                document.getElementById(`label_${checkbox.value}`).style.backgroundColor = "lightblue";
+                guessNumArr[index] = checkbox.value;
+            });
+            uncheckedboxes.forEach(function (uncheckedbox) {
+                document.getElementById(`label_${uncheckedbox.value}`).style.backgroundColor = "rgb(120, 90, 90)";
+            });
+            // return guessNumArr; // how to return value when using the eventListener?
+            // check value here because don't know how to return the value 
+            let guessed = checkGuessNum(guessNumArr, randomNumArr);
+            guessed.forEach(function (value) {
+                document.getElementById(`label_${value}`).style.backgroundColor = "red";
+            });
+            console.log(guessed);
+            // if all the same 
+            if (guessed.length == randomNumArr.length) {
+                let prizeElements = document.getElementById(`prize`).style.visibility = 'visible';
+            }
+        }
+
+    </script>
+</body>
+
+</html>
