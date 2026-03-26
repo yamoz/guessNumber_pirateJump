@@ -54,4 +54,4 @@ function dis() {
 }
 
 document.addEventListener('click', dis, {once: true});
-document.addEventListener('touchstart', dis, {once: true});
+// document.addEventListener('touchstart', dis, {once: true});
