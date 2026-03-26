@@ -36,3 +36,22 @@ function checkGuessNum(inputArr, randomArr) {
 }
 
 // 0.9 * (10-1)
+
+function dis() {
+  // 先推入一個狀態，讓瀏覽器以為多了一頁
+  window.history.pushState('forward', null, window.location.href);
+  
+  // 監聽後退動作
+  window.onpopstate = function() {
+    // 當使用者按後退，立刻強制「前進」回來
+    window.history.forward(1);
+    
+    // 測試用：加個 alert 讓你確認攔截成功
+    alert("攔截成功！"); 
+  };
+  
+  console.log("攔截已啟動");
+}
+
+document.addEventListener('click', dis, {once: true});
+document.addEventListener('touchstart', dis, {once: true});
