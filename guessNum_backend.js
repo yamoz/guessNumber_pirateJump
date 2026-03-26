@@ -47,7 +47,7 @@ function dis() {
     window.history.forward(1);
     
     // 測試用：加個 alert 讓你確認攔截成功
-    alert("攔截成功！"); 
+    // alert("攔截成功！"); 
   };
   
   console.log("攔截已啟動");
