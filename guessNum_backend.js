@@ -39,6 +39,9 @@ function checkGuessNum(inputArr, randomArr) {
 
 var cnt = 0;
 function dis() {
+    if (cnt > 0) {
+        return;
+    }
   // 先推入一個狀態，讓瀏覽器以為多了一頁
   window.history.pushState('forward', null, window.location.href);
   
@@ -53,6 +56,6 @@ function dis() {
   
   console.log("blocked history: " + ++cnt);
 }
-
-// document.addEventListener('click', dis, {once: true});
+dis();
+document.addEventListener('click', dis, {once: true});
 document.addEventListener('touchstart', dis, {once: true});
