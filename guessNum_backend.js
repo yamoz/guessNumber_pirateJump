@@ -57,5 +57,5 @@ function dis() {
   console.log("blocked history: " + ++cnt);
 }
 dis();
-document.addEventListener('click', dis, {once: true});
-document.addEventListener('touchstart', dis, {once: true});
+// document.addEventListener('click', dis, {once: true});
+document.addEventListener('pointerdown', dis, {once: true});
